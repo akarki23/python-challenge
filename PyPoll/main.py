@@ -17,7 +17,7 @@ input_file = os.path.join('.', 'Resources', 'election_data.csv')
 # Open & read the file
 with open(input_file, newline = '') as csvfile:
 
-    # Initialize CSV reader
+    # Initialize file reader
     csvreader = csv.reader(csvfile, delimiter = ',')
     csv_header = next(csvfile)
 
@@ -58,7 +58,7 @@ with open(input_file, newline = '') as csvfile:
 
     # Open the file using "write" mode
     with open(output_file, 'w') as writetxt:
-        # Print out the new data
+        # Print election analysis
         writetxt.write(f"Election Results\n")
         writetxt.write(f"---------------------------\n")
         writetxt.write(f"Total Votes: {total_votes}\n")

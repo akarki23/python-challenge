@@ -56,7 +56,7 @@ def financial_analysis(data):
     # Greatest decrease in profits
     mimimum = changes.index(min(changes))
 
-    # use index positions to find the month that corresponds with max and min values from the changeList
+    # use index positions to find the month that corresponds with max and min values from the changes
     max_change = (months[int(maximum)], max(changes))
     min_change = (months[int(mimimum)], min(changes))
     
