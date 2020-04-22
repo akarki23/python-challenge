@@ -4,88 +4,94 @@
 import os
 import csv
 
-# Initialize the variables
-total_months = 0
-net_total = 0
-monthly_change = []
-month_count = []
-greatest_increase = 0
-greatest_increase_month = 0
-greatest_decrease = 0
-greatest_decrease_month = 0
-
 # Set the file path
-csvpath = os.path.join('.', 'Resources', 'budget_data.csv')
+input_file = os.path.join('.', 'Resources', 'budget_data.csv')
 
-# Open & read the CSV file
-with open(csvpath, newline = '') as csvfile:
-    
-    # Initialize CSV reader
-    csvreader = csv.reader(csvfile, delimiter = ',')
-    
-    # Skips reading the header
-    csv_header = next(csvreader)
-    row = next(csvreader)
-    
-    # Calculate the variables
-    previous_row = int(row[1])
-    total_months += 1
-    net_total += int(row[1])
-    greatest_increase = int(row[1])
-    greatest_increase_month = row[0]
-    
-    # Loop through the rows
-    for row in csvreader:
-        
-        # Total number of months included in the dataset
-        total_months += 1
-        
-        # Net amount of profit & losses
-        net_total += int(row[1])
+# Define a function to analyze the data
+def analyze_budget(data):
 
-        # Change from the current month to the previous month
-        revenue_change = int(row[1]) - previous_row
-        monthly_change.append(revenue_change)
-        previous_row = int(row[1])
-        month_count.append(row[0])
+    # Initialize variables
+    months_count = 0
+    profit = 0
+    months = []
+    profit_months = 0
+    change = 0
+    changes = []
+    
+    # Loop through rows
+    for row in data:
+       
+        # Increment the count of months
+        months_count = months_count + 1
+
+        # Increment profit
+        profit = profit + int(row[1])
         
-        # Greatest increase
-        if int(row[1]) > greatest_increase:
-            greatest_increase = int(row[1])
-            greatest_increase_month = row[0]
+        # Append each month into months
+        months.append(str(row[0]))
+        
+        # If there is previous data
+        if change != 0:
             
-        # Greatest decrease
-        if int(row[1]) < greatest_decrease:
-            greatest_decrease = int(row[1])
-            greatest_decrease_month = row[0]  
-        
-    # Calculate the average & the date
-    average_change = sum(monthly_change) / len(monthly_change)
+            # Set profit
+            profit_months = int(row[1])
+
+            # Calculate change
+            change = profit_months - change
+            
+            # Append each change into changes
+            changes.append(change)
+            change = int(row[1])
+            
+        # No previous data *applies once for the first row
+        elif change == 0:
+            change = int(row[1])  
+            
+    # Remove 1st month from months since there is no change
+    months.pop(0)
     
-    highest = max(monthly_change)
-    lowest = min(monthly_change)
+    # Greatest increase in profits
+    maximum = changes.index(max(changes))
 
-# Print financial analysis
-print(f"------------------------------")
-print(f"Financial Analysis")
-print(f"------------------------------")
-print(f"Total Months: {total_months}")
-print(f"Total: ${net_total}")
-print(f"Average Change: ${average_change:.2f}")
-print(f"Greatest Increase in Profits:, {greatest_increase_month}, (${highest})")
-print(f"Greatest Decrease in Profits:, {greatest_decrease_month}, (${lowest})")
+    # Greatest decrease in profits
+    mimimum = changes.index(min(changes))
 
-# Specify the file to write to
-output_file = os.path.join('.', 'Resources', 'budget_data_revised.text')
+    # use index positions to find the month that corresponds with max and min values from the changeList
+    max_change = (months[int(maximum)], max(changes))
+    min_change = (months[int(mimimum)], min(changes))
+    
+    # take average of the changeList
+    average = sum(changes) / float(len(changes))
+    average = round(average, 2)
+    
+    # print the results
+    print(f'Financial Analysis')
+    print(f'-------------------------------------------')
+    print(f'Total Months: {months_count}')
+    print(f'Total: ${profit}')
+    print(f'Average Change: ${average:.2f}')
+    print(f'Greatest Increase in Profits: {max_change}')
+    print(f'Greatest Loss In Profits: {min_change}')
 
-# Open the file using "write" mode
-with open(output_file, 'w') as txtfile:
+    # Set the file to write to
+    output_file = os.path.join('.', 'Resources', 'budget_data_revised.txt')    
+    
+    # Write the results to a text file
+    with open(output_file, 'w') as writetxt:
+        writetxt.write('Financial Analysis')
+        writetxt.write('\n------------------------------------')
+        writetxt.write(f'\nTotal Months: {months_count}')
+        writetxt.write(f'\nTotal: ${profit}')
+        writetxt.write(f'\nAverage Change: ${average:.2f}')
+        writetxt.write(f'\nGreatest Increase In Profits: {max_change}')
+        writetxt.write(f'\nGreatest Loss In Profits: {min_change}')
 
-# Print out the new data
-    txtfile.write(f"Financial Analysis\n")
-    txtfile.write(f"---------------------------\n")
-    txtfile.write(f"Total Months: {total_months}\n")
-    txtfile.write(f"Total: ${net_total}\n")
-    txtfile.write(f"Average Change: ${average_change}\n")
-    txtfile.write(f"Greatest Increase in Profits:, {greatest_increase_month}, (${highest})\n")
-    txtfile.write(f"Greatest Decrease in Profits:, {greatest_decrease_month}, (${lowest})\n")
+# Open & read the file
+with open(input_file, 'r', newline='') as csvfile:
+
+    # Initialize CSV reader
+    csvreader = csv.reader(csvfile, delimiter=',')
+    csv_header = next(csvfile)
+    
+    # Call the function with the file as it's parameter
+    analyze_budget(csvreader)
