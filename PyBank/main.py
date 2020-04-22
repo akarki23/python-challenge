@@ -8,7 +8,7 @@ import csv
 input_file = os.path.join('.', 'Resources', 'budget_data.csv')
 
 # Define a function to analyze the data
-def analyze_budget(data):
+def financial_analysis(data):
 
     # Initialize variables
     months_count = 0
@@ -74,7 +74,7 @@ def analyze_budget(data):
     print(f'Greatest Loss In Profits: {min_change}')
 
     # Set the file to write to
-    output_file = os.path.join('.', 'Resources', 'budget_data_revised.txt')    
+    output_file = os.path.join('.', 'Output', 'budget_data_revised.txt')    
     
     # Write the results to a text file
     with open(output_file, 'w') as writetxt:
@@ -94,4 +94,4 @@ with open(input_file, 'r', newline='') as csvfile:
     csv_header = next(csvfile)
     
     # Call the function with the file as it's parameter
-    analyze_budget(csvreader)
+    financial_analysis(csvreader)
